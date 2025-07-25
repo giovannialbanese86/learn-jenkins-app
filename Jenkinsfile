@@ -50,7 +50,7 @@ pipeline {
 
             agent {
                 docker {
-                    image 'mcr.microsoft.com/playwright:v1.39.0-yammy'
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
                     reuseNode true
                     //args '-u root:root' //Eseguiamo il container come utente root, Necessario per eseguire i test con Playwright
                 }
