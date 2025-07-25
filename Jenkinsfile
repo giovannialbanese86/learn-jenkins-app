@@ -60,7 +60,8 @@ pipeline {
             steps {
                 sh '''
                     npm install serve
-                    node_modules/.bin/serve -s build
+                    #node_modules/.bin/serve -s build mette il server in run bloccando la pipeline in quanto il server rimane in esecuzione non esce(come è ovvio che sia). Con & lo mettiamo in background
+                    node_modules/.bin/serve -s build &
                     npx playwrite test
                 '''                    
             }
