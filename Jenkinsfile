@@ -4,7 +4,7 @@ pipeline {
     agent any
 
     stages {
-        
+
         stage('Build') {
 
             agent {
@@ -78,11 +78,11 @@ pipeline {
 
         //Esecuzione stages in parallelo
         //Si crea uno stage che raggruppa gli altri due stage e li esegue in parallelo. Per fallo dobbiamo racchiudere in una closure (le parentesi graffe) e usare la parola chiave parallel
-        stage('Test && E2E') {
+        stage('Unit Test && E2E') {
             
             parallel {
 
-                stage('Test') {
+                stage('Unit Test') {
 
                     agent {
                         docker {
@@ -94,7 +94,7 @@ pipeline {
                     //npm test è un comando che esegue gli script di test definiti nel package.json e genera junit.xml nel formato junit nella folder test-results
                     steps {
                         sh '''
-                            #echo "Running tests..."
+                            echo "Running Unit Test..."
                             touch build/index.html
                             npm test
                         '''                    
@@ -125,6 +125,7 @@ pipeline {
                     //possiamo pubblicarlo 
                     steps {
                         sh '''
+                            echo "E2E Test..."
                             npm install serve
                             #node_modules/.bin/serve -s build mette il server in run bloccando la pipeline in quanto il server rimane in esecuzione non esce(come è ovvio che sia). Con & lo mettiamo in background
                             node_modules/.bin/serve -s build &
