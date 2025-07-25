@@ -38,6 +38,7 @@ pipeline {
             //npm test è un comando che esegue gli script di test definiti nel package.json e genera junit.xml nel formato junit nella folder test-results
             steps {
                 sh '''
+                    echo "Running tests..."
                     touch build/index.html
                     npm test
                 '''                    
