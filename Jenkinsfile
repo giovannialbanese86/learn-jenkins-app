@@ -26,6 +26,9 @@ pipeline {
 
         }
 
+
+        //Esecuzione stages in sequenza
+        /*
         stage('Test') {
 
             agent {
@@ -70,18 +73,82 @@ pipeline {
             }
 
         }
+        */
 
-    }
+        //Esecuzione stages in parallelo
+        //Si crea uno stage che raggruppa gli altri due stage e li esegue in parallelo. Per fallo dobbiamo racchiudere in una closure (le parentesi graffe) e usare la parola chiave parallel
+        stage('Test && E2E') {
+            
+            parallel {
 
-    //Pubblichiamo junit.xml (e lo archiviamo). Questo farà comparire in jenkins il report dei test
-    post {
-        always {
-            junit 'jest-results/junit.xml'
-            //archiveArtifacts artifacts: 'build/**/*', fingerprint: true
+                stage('Test') {
 
-            //Codice generato dentro jenkins in Cinfigurazione Job -> Pipeline Syntax -> Publish HTML reports
-            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                    agent {
+                        docker {
+                            image 'node:18-alpine'
+                            reuseNode true
+                        }
+                    }
+
+                    //npm test è un comando che esegue gli script di test definiti nel package.json e genera junit.xml nel formato junit nella folder test-results
+                    steps {
+                        sh '''
+                            #echo "Running tests..."
+                            touch build/index.html
+                            npm test
+                        '''                    
+                    }
+
+                    //Pubblichiamo junit.xml (e lo archiviamo). Questo farà comparire in jenkins il report dei test
+                    post {
+                        always {
+                            junit 'jest-results/junit.xml'
+                            //archiveArtifacts artifacts: 'build/**/*', fingerprint: true
+                        }
+                    }
+    
+
+                }
+
+                stage('E2E') {
+
+                    agent {
+                        docker {
+                            image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                            reuseNode true
+                            //args '-u root:root' //Eseguiamo il container come utente root, Necessario per eseguire i test con Playwright
+                        }
+                    }
+
+                    //Installare il plugin html publisher per pubblicare il report dei test in jenkins
+                    //possiamo pubblicarlo 
+                    steps {
+                        sh '''
+                            npm install serve
+                            #node_modules/.bin/serve -s build mette il server in run bloccando la pipeline in quanto il server rimane in esecuzione non esce(come è ovvio che sia). Con & lo mettiamo in background
+                            node_modules/.bin/serve -s build &
+                            #Attendo che il server parta
+                            sleep 10
+                            npx playwright test --reporter=html
+                        '''                    
+                    }
+
+                    //Pubblichiamo l'html report
+                    post {
+                        always {
+
+                            //Codice generato dentro jenkins in Cinfigurazione Job -> Pipeline Syntax -> Publish HTML reports
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                        }
+                    }
+    
+
+                }
+
+            }
+
         }
+
     }
 
 }
