@@ -64,7 +64,7 @@ pipeline {
                     node_modules/.bin/serve -s build &
                     #Attendo che il server parta
                     sleep 10
-                    npx playwrite test
+                    npx playwright test playwright 
                 '''                    
             }
 
