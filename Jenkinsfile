@@ -52,6 +52,7 @@ pipeline {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.54.0-noble'
                     reuseNode true
+                    args '-u root:root' //Eseguiamo il container come utente root, Necessario per eseguire i test con Playwright
                 }
             }
 
