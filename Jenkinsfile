@@ -46,6 +46,26 @@ pipeline {
 
         }
 
+        stage('E2E') {
+
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.54.0-noble'
+                    reuseNode true
+                }
+            }
+
+            
+            steps {
+                sh '''
+                    npm install -g serve
+                    serve -s build
+                    npx playwrite test
+                '''                    
+            }
+
+        }
+
     }
 
     //Pubblichiamo junit.xml (e lo archiviamo). Questo farà comparire in jenkins il report dei test
