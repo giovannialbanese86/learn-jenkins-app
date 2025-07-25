@@ -46,4 +46,13 @@ pipeline {
         }
 
     }
+
+    //Pubblichiamo junit.xml (e lo archiviamo). Questo farà comparire in jenkins il report dei test
+    post {
+        always {
+            junit 'test-results/junit.xml'
+            //archiveArtifacts artifacts: 'build/**/*', fingerprint: true
+        }
+    }
+
 }
