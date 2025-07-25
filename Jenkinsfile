@@ -56,7 +56,8 @@ pipeline {
                 }
             }
 
-            
+            //Installare il plugin html publisher per pubblicare il report dei test in jenkins
+            //possiamo pubblicarlo 
             steps {
                 sh '''
                     npm install serve
@@ -77,6 +78,7 @@ pipeline {
         always {
             junit 'jest-results/junit.xml'
             //archiveArtifacts artifacts: 'build/**/*', fingerprint: true
+            
         }
     }
 
