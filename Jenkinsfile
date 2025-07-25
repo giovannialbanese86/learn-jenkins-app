@@ -50,7 +50,7 @@ pipeline {
 
             agent {
                 docker {
-                    image 'mcr.microsoft.com/playwright:v1.54.0-noble'
+                    image 'mcr.microsoft.com/playwright:v1.39.0-yammy'
                     reuseNode true
                     //args '-u root:root' //Eseguiamo il container come utente root, Necessario per eseguire i test con Playwright
                 }
@@ -75,7 +75,7 @@ pipeline {
     //Pubblichiamo junit.xml (e lo archiviamo). Questo farà comparire in jenkins il report dei test
     post {
         always {
-            junit 'test-results/junit.xml'
+            junit 'jest-results/junit.xml'
             //archiveArtifacts artifacts: 'build/**/*', fingerprint: true
         }
     }
