@@ -6,7 +6,9 @@ pipeline {
     stages {
 
         stage('Build') {
-
+            
+            //Per questo stage Build per eseguire steps devo usare un agente che è ina immagine docker di node
+            //Jenkins chiede a docker di runnare l'immagine, eseguire i comandi in steps e rimuovere il container al termine
             agent {
                 docker {
                     image 'node:18-alpine'
