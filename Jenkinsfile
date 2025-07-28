@@ -185,7 +185,18 @@ pipeline {
             }
 
         }
-        
+
+        stage('Approval') {
+            steps {
+                script {
+                    timeout(time: 30, unit: 'SECONDS') {
+                        //Chiediamo l'approvazione manuale per procedere con il deploy in produzione
+                        input message: 'Approve deployment to production?', ok: 'Deploy to Prod'
+                    }
+                }
+            }
+        }
+
         stage('Depoly Prod') {
             
             //Per questo stage Depoly per eseguire steps devo usare un agente che è ina immagine docker di node
