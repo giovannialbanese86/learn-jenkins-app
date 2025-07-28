@@ -6,11 +6,12 @@ pipeline {
     environment {
         NETLIFY_SITE_ID = credentials('29970ded-725b-4187-839c-dacaedd58c3c')
         //MAI SALVARE SECRETS/JST API TOKEN IN JENKINSFILE, MA DIRETTAMENTE IN JENKINS CREDENTIALS. Accediamo poi alle JenkinsCredentialis tramite la funzione credentials('id-della-credential')
-        //NETLIFY_AUTH_TOKEN = credentials('netlify-token') //Netlifi si aspetta esattamente questo nome per il token di autenticazione: NETLIFY_AUTH_TOKEN
+        NETLIFY_AUTH_TOKEN = credentials('netlify-token') //Netlifi si aspetta esattamente questo nome per il token di autenticazione: NETLIFY_AUTH_TOKEN
     }
 
     stages {
 
+        /*
         stage('Build') {
             
             //Per questo stage Build per eseguire steps devo usare un agente che è ina immagine docker di node
@@ -34,7 +35,7 @@ pipeline {
             }
 
         }
-
+        */
 
         //Esecuzione stages in sequenza
         /*
@@ -86,6 +87,8 @@ pipeline {
 
         //Esecuzione stages in parallelo
         //Si crea uno stage che raggruppa gli altri due stage e li esegue in parallelo. Per fallo dobbiamo racchiudere in una closure (le parentesi graffe) e usare la parola chiave parallel
+        
+        /*
         stage('Unit Test && E2E') {
             
             parallel {
@@ -112,7 +115,6 @@ pipeline {
                     post {
                         always {
                             junit 'jest-results/junit.xml'
-                            //archiveArtifacts artifacts: 'build/**/*', fingerprint: true
                         }
                     }
     
@@ -158,8 +160,9 @@ pipeline {
             }
 
         }
+        */
 
-
+        /*
         stage('Depoly') {
             
             //Per questo stage Depoly per eseguire steps devo usare un agente che è ina immagine docker di node
@@ -180,6 +183,18 @@ pipeline {
                     echo "Deploying to Netlify. Site ID: ${NETLIFY_SITE_ID}"
                     #NETLIFY_AUTH_TOKEN
                     node_modules/.bin/netlify status
+
+                '''                    
+            }
+
+        }
+        */
+        
+        stage()('AAA') {
+            
+            steps {
+                sh '''
+                    echo "WHOAMI"
 
                 '''                    
             }
