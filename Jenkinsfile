@@ -179,6 +179,7 @@ pipeline {
                     echo "Deploying to Netlify. Site ID: ${NETLIFY_SITE_ID}"
                     #NETLIFY_AUTH_TOKEN
                     node_modules/.bin/netlify status
+                    node_modules/.bin/netlify deploy --dir build --prod 
 
                 '''                    
             }
