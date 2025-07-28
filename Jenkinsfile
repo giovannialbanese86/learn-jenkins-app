@@ -190,7 +190,7 @@ pipeline {
         }
         */
         
-        stage()('AAA') {
+        stage('AAA') {
             
             steps {
                 sh '''
