@@ -158,8 +158,35 @@ pipeline {
             }
 
         }
+
+        stage('Depoly Staging') {
+            
+            //Per questo stage Depoly per eseguire steps devo usare un agente che è ina immagine docker di node
+            //Jenkins chiede a docker di runnare l'immagine, eseguire i comandi in steps e rimuovere il container al termine
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+
+            steps {
+                sh '''
+                    #echo "WHOAMI"
+                    #whoami
+                    npm install netlify-cli@20.1.1
+                    #node_modules/.bin/netlify --version
+                    echo "Deploying to Staging Netlify. Site ID: ${NETLIFY_SITE_ID}"
+                    #NETLIFY_AUTH_TOKEN
+                    node_modules/.bin/netlify status
+                    node_modules/.bin/netlify deploy --dir build
+
+                '''                    
+            }
+
+        }
         
-        stage('Depoly') {
+        stage('Depoly Prod') {
             
             //Per questo stage Depoly per eseguire steps devo usare un agente che è ina immagine docker di node
             //Jenkins chiede a docker di runnare l'immagine, eseguire i comandi in steps e rimuovere il container al termine
