@@ -186,6 +186,41 @@ pipeline {
 
         }
 
+        stage('Prod E2E') {
+
+            environment {
+                CI_ENVIRONMENT_URL = "https://magnificent-hamster-02cbb4.netlify.app"
+            }
+
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
+                    //args '-u root:root' //Eseguiamo il container come utente root, Necessario per eseguire i test con Playwright
+                }
+            }
+
+            //Installare il plugin html publisher per pubblicare il report dei test in jenkins
+            //possiamo pubblicarlo 
+            steps {
+                sh '''
+                    echo "Prod E2E Test..."
+                    npx playwright test --reporter=html
+                '''                    
+            }
+
+            //Pubblichiamo l'html report
+            post {
+                always {
+
+                    //Codice generato dentro jenkins in Cinfigurazione Job -> Pipeline Syntax -> Publish HTML reports
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright E2E Report', reportTitles: '', useWrapperFileDirectly: true])
+                }
+            }
+
+
+        }
+
 
     }
 
