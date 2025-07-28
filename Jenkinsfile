@@ -167,6 +167,8 @@ pipeline {
 
             steps {
                 sh '''
+                    echo "WHOMI"
+                    whoami
                     npm install netlify-cli
                     netlify --version
                 '''                    
