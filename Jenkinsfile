@@ -4,14 +4,14 @@ pipeline {
     agent any
 
     environment {
-        //NETLIFY_SITE_ID = credentials('29970ded-725b-4187-839c-dacaedd58c3c')
+        NETLIFY_SITE_ID = '29970ded-725b-4187-839c-dacaedd58c3c'
         //MAI SALVARE SECRETS/JST API TOKEN IN JENKINSFILE, MA DIRETTAMENTE IN JENKINS CREDENTIALS. Accediamo poi alle JenkinsCredentialis tramite la funzione credentials('id-della-credential')
-        //NETLIFY_AUTH_TOKEN = credentials('netlify-token') //Netlifi si aspetta esattamente questo nome per il token di autenticazione: NETLIFY_AUTH_TOKEN
+        NETLIFY_AUTH_TOKEN = credentials('netlify-token') //Netlifi si aspetta esattamente questo nome per il token di autenticazione: NETLIFY_AUTH_TOKEN
     }
 
     stages {
 
-        /*
+        
         stage('Build') {
             
             //Per questo stage Build per eseguire steps devo usare un agente che è ina immagine docker di node
@@ -35,7 +35,7 @@ pipeline {
             }
 
         }
-        */
+        
 
         //Esecuzione stages in sequenza
         /*
@@ -87,8 +87,6 @@ pipeline {
 
         //Esecuzione stages in parallelo
         //Si crea uno stage che raggruppa gli altri due stage e li esegue in parallelo. Per fallo dobbiamo racchiudere in una closure (le parentesi graffe) e usare la parola chiave parallel
-        
-        /*
         stage('Unit Test && E2E') {
             
             parallel {
@@ -160,9 +158,7 @@ pipeline {
             }
 
         }
-        */
-
-        /*
+        
         stage('Depoly') {
             
             //Per questo stage Depoly per eseguire steps devo usare un agente che è ina immagine docker di node
@@ -188,18 +184,7 @@ pipeline {
             }
 
         }
-        */
-        
-        stage('AAA') {
-            
-            steps {
-                sh '''
-                    echo "WHOAMI"
 
-                '''                    
-            }
-
-        }
 
     }
 
