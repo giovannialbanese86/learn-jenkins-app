@@ -164,6 +164,7 @@ pipeline {
 
             steps {
                 sh '''
+                
                     #echo "WHOAMI"
                     #whoami
                     npm install netlify-cli@20.1.1
@@ -171,8 +172,10 @@ pipeline {
                     echo "Deploying to Netlify. Site ID: ${NETLIFY_SITE_ID}"
                     #NETLIFY_AUTH_TOKEN
                     node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir build --prod 
-                    #node_modules/.bin/netlify deploy --dir build --json > deploy-output.json #--json ritorna il result in json in deploy-output.json grazie all' operatore(inux) di redirezione dell'output
+                    #node_modules/.bin/netlify deploy --dir build --prod 
+                    npm install node-jq # installiamo jq per poter leggere il json di output del deploy
+                    node_modules/.bin/netlify deploy --dir build --json > deploy-output.json #--json ritorna il result in json in deploy-output.json grazie all' operatore(inux) di redirezione dell'output
+                    node_modules/.bin/node-jq -r '.deploy_url' 'deploy-output.json' #tramite jp recuperiamo la property deploy_url dal json di output del deploy e la stampiamo a video
 
                 '''                    
             }
