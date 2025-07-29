@@ -37,54 +37,6 @@ pipeline {
         }
         
 
-        //Esecuzione stages in sequenza
-        /*
-        stage('Test') {
-
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-
-            //npm test è un comando che esegue gli script di test definiti nel package.json e genera junit.xml nel formato junit nella folder test-results
-            steps {
-                sh '''
-                    #echo "Running tests..."
-                    touch build/index.html
-                    npm test
-                '''                    
-            }
-
-        }
-
-        stage('E2E') {
-
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                    reuseNode true
-                    //args '-u root:root' //Eseguiamo il container come utente root, Necessario per eseguire i test con Playwright
-                }
-            }
-
-            //Installare il plugin html publisher per pubblicare il report dei test in jenkins
-            //possiamo pubblicarlo 
-            steps {
-                sh '''
-                    npm install serve
-                    #node_modules/.bin/serve -s build mette il server in run bloccando la pipeline in quanto il server rimane in esecuzione non esce(come è ovvio che sia). Con & lo mettiamo in background
-                    node_modules/.bin/serve -s build &
-                    #Attendo che il server parta
-                    sleep 10
-                    npx playwright test --reporter=html
-                '''                    
-            }
-
-        }
-        */
-
         //Esecuzione stages in parallelo
         //Si crea uno stage che raggruppa gli altri due stage e li esegue in parallelo. Per fallo dobbiamo racchiudere in una closure (le parentesi graffe) e usare la parola chiave parallel
         stage('Unit Test && E2E') {
@@ -186,6 +138,7 @@ pipeline {
 
         }
 
+        /*
         stage('Approval') {
             steps {
                 script {
@@ -196,6 +149,7 @@ pipeline {
                 }
             }
         }
+        */
 
         stage('Depoly Prod') {
             
