@@ -172,6 +172,7 @@ pipeline {
                     #NETLIFY_AUTH_TOKEN
                     node_modules/.bin/netlify status
                     node_modules/.bin/netlify deploy --dir build --prod 
+                    #node_modules/.bin/netlify deploy --dir build --json > deploy-output.json #--json ritorna il result in json in deploy-output.json grazie all' operatore(inux) di redirezione dell'output
 
                 '''                    
             }
