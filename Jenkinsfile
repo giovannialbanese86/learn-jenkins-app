@@ -184,7 +184,7 @@ pipeline {
                 sh '''
                     echo "Deploying to production. Site ID: $NETLIFY_SITE_ID"
     
-                    npm install netlify-cli
+                    #npm install netlify-cli # Non serve installare netlify-cli, è già installato nello stage di Depoly Staging con reuseNode true -> nei node_modules del workspace è gia presente
                     node_modules/.bin/netlify status
                     node_modules/.bin/netlify deploy --dir=build --prod
                     npx playwright test  --reporter=html
