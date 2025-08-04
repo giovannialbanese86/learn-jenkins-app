@@ -127,12 +127,12 @@ pipeline {
                     #echo "WHOAMI"
                     #whoami
                     npm install netlify-cli@20.1.1
-                     npm install node-jq # installiamo jq per poter leggere il json di output del deploy
                     #node_modules/.bin/netlify --version
                     echo "Deploying to Staging Netlify. Site ID: ${NETLIFY_SITE_ID}"
                     #NETLIFY_AUTH_TOKEN
                     node_modules/.bin/netlify status
                     node_modules/.bin/netlify deploy --dir build --json > deploy-output.json #--json ritorna il result in json in deploy-output.json grazie all' operatore(linux) di redirezione dell'output
+                    npm install node-jq # installiamo jq per poter leggere il json di output del deploy
                     node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json #tramite jq recuperiamo la property deploy_url dal json di output del deploy e la stampiamo a video
                     #node_modules/.bin/netlify deploy --dir build --prod
                 '''                    
@@ -156,6 +156,7 @@ pipeline {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
                     reuseNode true
+                    //args '-u root:root' //Eseguiamo il container come utente root, Necessario per eseguire i test con Playwright
                     //args '-u root:root' //Eseguiamo il container come utente root, Necessario per eseguire i test con Playwright
                 }
             }
