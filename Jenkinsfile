@@ -196,37 +196,6 @@ pipeline {
         */
 
         stage('Depoly Prod') {
-            
-            //Per questo stage Depoly per eseguire steps devo usare un agente che è ina immagine docker di node
-            //Jenkins chiede a docker di runnare l'immagine, eseguire i comandi in steps e rimuovere il container al termine
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-
-            steps {
-                sh '''
-                
-                    #echo "WHOAMI"
-                    #whoami
-                    npm install netlify-cli@20.1.1
-                    #node_modules/.bin/netlify --version
-                    echo "Deploying to Netlify. Site ID: ${NETLIFY_SITE_ID}"
-                    #NETLIFY_AUTH_TOKEN
-                    node_modules/.bin/netlify status
-                    #node_modules/.bin/netlify deploy --dir build --prod 
-                    npm install node-jq # installiamo jq per poter leggere il json di output del deploy
-                    node_modules/.bin/netlify deploy --dir build --json > deploy-output.json #--json ritorna il result in json in deploy-output.json grazie all' operatore(inux) di redirezione dell'output
-                    node_modules/.bin/node-jq -r '.deploy_url' 'deploy-output.json' #tramite jp recuperiamo la property deploy_url dal json di output del deploy e la stampiamo a video
-
-                '''                    
-            }
-
-        }
-
-        stage('Prod E2E') {
 
             environment {
                 CI_ENVIRONMENT_URL = "https://magnificent-hamster-02cbb4.netlify.app"
@@ -245,6 +214,17 @@ pipeline {
             steps {
                 sh '''
                     echo "Prod E2E Test..."
+                    ' #echo "WHOAMI"
+                    #whoami
+                    npm install netlify-cli@20.1.1
+                    #node_modules/.bin/netlify --version
+                    echo "Deploying to Netlify. Site ID: ${NETLIFY_SITE_ID}"
+                    #NETLIFY_AUTH_TOKEN
+                    node_modules/.bin/netlify status
+                    #node_modules/.bin/netlify deploy --dir build --prod 
+                    npm install node-jq # installiamo jq per poter leggere il json di output del deploy
+                    node_modules/.bin/netlify deploy --dir build --json > deploy-output.json #--json ritorna il result in json in deploy-output.json grazie all' operatore(inux) di redirezione dell'output
+                    node_modules/.bin/node-jq -r '.deploy_url' 'deploy-output.json' #tramite jp recuperiamo la property deploy_url dal json di output del deploy e la stampiamo a video
                     npx playwright test --reporter=html
                 '''                    
             }
