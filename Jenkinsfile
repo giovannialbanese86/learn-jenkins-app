@@ -131,10 +131,52 @@ pipeline {
                     echo "Deploying to Staging Netlify. Site ID: ${NETLIFY_SITE_ID}"
                     #NETLIFY_AUTH_TOKEN
                     node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir build
+                    node_modules/.bin/netlify deploy --dir build --json > deploy-output.json #--json ritorna il result in json in deploy-output.json grazie all' operatore(linux) di redirezione dell'output
+                    node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json #tramite jq recuperiamo la property deploy_url dal json di output del deploy e la stampiamo a video
+                    #node_modules/.bin/netlify deploy --dir build --prod
+                '''                    
+                script {
+                    env.STAGING_URL = sh(script: "node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json", returnStdout: true).trim()
+                }
 
+            }
+
+
+
+        }
+
+        stage('Staging E2E') {
+
+            environment {
+                CI_ENVIRONMENT_URL = "$env.STAGING_URL"
+            }
+
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
+                    //args '-u root:root' //Eseguiamo il container come utente root, Necessario per eseguire i test con Playwright
+                }
+            }
+
+            //Installare il plugin html publisher per pubblicare il report dei test in jenkins
+            //possiamo pubblicarlo 
+            steps {
+                sh '''
+                    echo "Prod E2E Test..."
+                    npx playwright test --reporter=html
                 '''                    
             }
+
+            //Pubblichiamo l'html report
+            post {
+                always {
+
+                    //Codice generato dentro jenkins in Cinfigurazione Job -> Pipeline Syntax -> Publish HTML reports
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Staging E2E Report', reportTitles: '', useWrapperFileDirectly: true])
+                }
+            }
+
 
         }
 
@@ -210,7 +252,7 @@ pipeline {
                 always {
 
                     //Codice generato dentro jenkins in Cinfigurazione Job -> Pipeline Syntax -> Publish HTML reports
-                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright E2E Report', reportTitles: '', useWrapperFileDirectly: true])
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Prod E2E Report', reportTitles: '', useWrapperFileDirectly: true])
                 }
             }
 
