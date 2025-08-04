@@ -127,6 +127,7 @@ pipeline {
                     #echo "WHOAMI"
                     #whoami
                     npm install netlify-cli@20.1.1
+                     npm install node-jq # installiamo jq per poter leggere il json di output del deploy
                     #node_modules/.bin/netlify --version
                     echo "Deploying to Staging Netlify. Site ID: ${NETLIFY_SITE_ID}"
                     #NETLIFY_AUTH_TOKEN
