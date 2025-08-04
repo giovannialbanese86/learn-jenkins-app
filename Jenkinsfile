@@ -7,6 +7,7 @@ pipeline {
         NETLIFY_SITE_ID = '29970ded-725b-4187-839c-dacaedd58c3c'
         //MAI SALVARE SECRETS/JST API TOKEN IN JENKINSFILE, MA DIRETTAMENTE IN JENKINS CREDENTIALS. Accediamo poi alle JenkinsCredentialis tramite la funzione credentials('id-della-credential')
         NETLIFY_AUTH_TOKEN = credentials('netlify-token') //Netlifi si aspetta esattamente questo nome per il token di autenticazione: NETLIFY_AUTH_TOKEN
+        REACT_APP_VERSION = '1.2.3' //Versione dell'applicazione React, può essere utile per il deploy
     }
 
     stages {
